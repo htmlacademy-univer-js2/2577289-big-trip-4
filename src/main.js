@@ -4,6 +4,7 @@ import EventListView from './view/event-list-view.js';
 import FilterView from './view/filter-view.js';
 import SortView from './view/sort-view.js';
 import WaypointView from './view/waypoint-view.js';
+import PointsModel from './model/points-model.js';
 
 import {render} from './render.js';
 import BoardPresenter from './presenter/board-presenter.js';
@@ -30,9 +31,16 @@ const filterElement = tripInfoElement.querySelector('.trip-controls__filters');
 const mainElement = bodyElement.querySelector('.page-main');
 const eventListElement = mainElement.querySelector('.trip-events');
 
-const boardPresenter = new BoardPresenter({
+/*const boardPresenter = new BoardPresenter({
 container: eventListElement,
 header: tripInfoElement
 });
 
+boardPresenter.init();*/
+const pointsModel = new PointsModel();
+const boardPresenter = new BoardPresenter({
+    container: eventListElement,
+    header: tripInfoElement,
+    pointsModel: pointsModel,
+});
 boardPresenter.init();

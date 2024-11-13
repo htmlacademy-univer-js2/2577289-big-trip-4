@@ -2,6 +2,7 @@ import {createElement} from '../render.js';
 import {createTripInfoTemplate} from '../template/trip-info-template.js';
 
 export default class TripInfoView {
+
   getTemplate() {
     return createTripInfoTemplate();
   }

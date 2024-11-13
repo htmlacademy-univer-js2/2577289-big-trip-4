@@ -2,8 +2,13 @@ import {createElement} from '../render.js';
 import {createWaypointTemplate} from '../template/waypoint-template.js';
 
 export default class WaypointView {
+
+  constructor({point}) {
+    this.point = point;
+  }
+
   getTemplate() {
-    return createWaypointTemplate();
+    return createWaypointTemplate(this.point);
   }
 
   getElement() {
