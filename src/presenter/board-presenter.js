@@ -4,7 +4,7 @@ import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import WaypointView from '../view/waypoint-view.js';
 import TripInfoView from '../view/trip-info-view.js';
-import {render, replace, remove} from '../framework/render.js';
+import {render, replace} from '../framework/render.js';
 //import { getEmptyPoint } from '../mock/point.js';
 
 const RenderPosition = {
