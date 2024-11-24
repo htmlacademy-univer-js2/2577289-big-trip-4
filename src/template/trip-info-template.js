@@ -1,8 +1,4 @@
-import dayjs from 'dayjs';
 import {humanizeTaskDueDate} from '../utils.js';
-import getRandomPicture from '../utils.js'
-import { findDestination } from '../mock/point.js';
-import { findSpecialOffer } from '../mock/point.js';
 import { getRandomCity } from '../mock/point.js';
 
 function createTripInfoTemplate() {
@@ -12,8 +8,8 @@ function createTripInfoTemplate() {
   const date1 = humanizeTaskDueDate('2019-07-10T22:55:56.845Z');
   const date2 = humanizeTaskDueDate('2019-07-11T11:22:13.375Z');
   const total = 2000;
-    return (
-      `<section class="trip-main__trip-info  trip-info">
+  return (
+    `<section class="trip-main__trip-info  trip-info">
             <div class="trip-info__main">
               <h1 class="trip-info__title">${city1} &mdash; ${city2} &mdash; ${city3}</h1>
 
@@ -24,7 +20,7 @@ function createTripInfoTemplate() {
               Total: &euro;&nbsp;<span class="trip-info__cost-value">${total}</span>
             </p>
           </section>`
-    );
-  }
+  );
+}
 
-  export {createTripInfoTemplate};
+export {createTripInfoTemplate};
