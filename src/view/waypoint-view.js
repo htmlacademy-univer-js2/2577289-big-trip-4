@@ -1,25 +1,25 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {createWaypointTemplate} from '../template/waypoint-template.js';
 
-export default class WaypointView {
+export default class WaypointView extends AbstractView{
+  #point = null;
+  #handleEditClick = null;
 
-  constructor({point}) {
-    this.point = point;
+  constructor({point, onEditClick}) {
+    super();
+    this.#point = point;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate() {
-    return createWaypointTemplate(this.point);
+  get template() {
+    return createWaypointTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
