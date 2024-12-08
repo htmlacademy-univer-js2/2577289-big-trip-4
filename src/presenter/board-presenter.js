@@ -6,9 +6,11 @@ import {render, RenderPosition} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
 //import { getEmptyPoint } from '../mock/point.js';
+import {SortType} from '../const.js';
+import { sortDateDown, sortPriceDown, sortTimeDown } from '../utils/point.js';
 
 export default class BoardPresenter {
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #infoComponent = new TripInfoView();
   #filterComponent = new FilterView();
   #eventListComponent = new EventListView();
@@ -17,6 +19,8 @@ export default class BoardPresenter {
   #pointsModel = null;
   #boardPoints = null;
   #pointPresenters = new Map();
+
+  #currentSortType = SortType.DATE_DOWN;
 
   constructor({container, header, pointsModel}) {
     this.#container = container;
@@ -30,6 +34,9 @@ export default class BoardPresenter {
   }
 
   #renderSort() {
+    this.#sortComponent = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#sortComponent, this.#container);
   }
 
@@ -64,6 +71,34 @@ export default class BoardPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
   }
+
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DATE_DOWN:
+        this.#boardPoints.sort(sortDateDown);
+        break;
+      case SortType.TIME_DOWN:
+        this.#boardPoints.sort(sortTimeDown);
+        break;
+      case SortType.PRICE_DOWN:
+        this.#boardPoints.sort(sortPriceDown);
+        break;
+    }
+    this.#currentSortType = sortType;
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    // - Очищаем список
+    // - Рендерим список заново
+    this.#clearPointList();
+    this.#renderPoints();
+  };
 
   #handlePointChange = (updatedPoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatedPoint);

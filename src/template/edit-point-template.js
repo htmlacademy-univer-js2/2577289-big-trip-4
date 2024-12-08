@@ -1,4 +1,4 @@
-import {humanizeTaskDueDate} from '../utils.js';
+import {humanizePointDate} from '../utils.js';
 import { findDestination, getOffers } from '../mock/point.js';
 import { EVENTS } from '../const.js';
 
@@ -26,8 +26,8 @@ function createEventsTemplate(type) {
 
 function createEditPointTemplate(point) {
   const {basePrice, dateFrom, dateTo, destination, offers, type} = point;
-  const dateF = humanizeTaskDueDate(dateFrom);
-  const dateT = humanizeTaskDueDate(dateTo);
+  const dateF = humanizePointDate(dateFrom);
+  const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
   const destDescription = findDestination(destination).description;
   const offersList = getOffers(offers, type);
