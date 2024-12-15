@@ -1,5 +1,5 @@
 import {humanizePointDate} from '../utils.js';
-import { findDestination, getOffers, findOffersByType, getDestinations } from '../mock/point.js';
+import { findDestination, findOffersByType, getDestinations } from '../mock/point.js';
 import { EVENTS } from '../const.js';
 
 function createDestListTemplate(destinations, destName) {
@@ -43,7 +43,7 @@ function createEventsTemplate(type) {
 }
 
 function createEditPointTemplate(point) {
-  const {basePrice, dateFrom, dateTo, destination, offers, type} = point;
+  const {basePrice, dateFrom, dateTo, destination, type} = point;
   const dateF = humanizePointDate(dateFrom);
   const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
