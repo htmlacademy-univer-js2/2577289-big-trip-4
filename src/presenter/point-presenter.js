@@ -1,6 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
 import WaypointView from '../view/waypoint-view.js';
 import EditPointView from '../view/edit-point-view.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -41,8 +42,10 @@ export default class PointPresenter {
       point: this.#point,
       onFormSubmit: this.#handleFormSubmit,
       onButtonClick: () => {
+        this.#pointEditComponent.reset(this.#point);
         this.#replaceFormToPoint();
-      }
+      },
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -65,7 +68,11 @@ export default class PointPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite},
+    );
   };
 
   destroy() {
@@ -82,6 +89,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
@@ -93,16 +101,40 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    this.#handleDataChange(point);
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    // todo!!!
+    // const isMinorUpdate =
+    //   !isDatesEqual(this.#point.dueDate, update.dueDate) ||
+    //   isTaskRepeating(this.#point.repeating) !== isTaskRepeating(update.repeating);
+
+    // this.#handleDataChange(
+    //   UserAction.UPDATE_TASK,
+    //   isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+    //   update,
+    // );
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
     this.#replaceFormToPoint();
   };
-
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }

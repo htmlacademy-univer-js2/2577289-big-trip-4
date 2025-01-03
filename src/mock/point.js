@@ -182,5 +182,14 @@ function getDestinations() {
   return mockDestination;
 }
 
+function getDestinationsNames() {
+  return mockDestination.map((dest) => dest.name);
+}
+
+function getDestinationNameById(destId) {
+  return mockDestination.find((item) => item.id === destId).name;
+}
+
 export {getRandomPoint, findDestination, findSpecialOffer, getRandomCity, getOffers,
-  getEmptyPoint, findOffersByType, getDestinations, findDestinationId};
+  getEmptyPoint, findOffersByType, getDestinations, findDestinationId, getDestinationsNames,
+  getDestinationNameById};
