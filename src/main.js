@@ -3,8 +3,6 @@ import BoardPresenter from './presenter/board-presenter.js';
 import NewPointButtonView from './view/new-point-button-view.js';
 import { render } from './framework/render.js';
 import FilterModel from './model/filter-model.js';
-import FilterPresenter from './presenter/filter-presenter.js';
-import { FilterType } from './const.js';
 
 const bodyElement = document.querySelector('body');
 const headerElement = bodyElement.querySelector('.page-header');
