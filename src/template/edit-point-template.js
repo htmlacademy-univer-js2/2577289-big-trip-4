@@ -1,5 +1,5 @@
-import {humanizePointDate} from '../utils.js';
-import { findDestination, findOffersByType, getDestinations } from '../mock/point.js';
+import { humanizePointDate } from '../utils.js';
+import { findDestination, findOffersByType, getDestinations } from '../utils/point.js';
 import { EVENTS } from '../const.js';
 
 function createDestListTemplate(destinations, destName) {
@@ -27,12 +27,17 @@ function createOffersTemplate(offers, point) {
 </div>`).join('');
 }
 
-function isCheckedOffer (offer, point) {
+function isCheckedOffer(offer, point) {
   return point.offers.includes(offer.id) ? 'checked' : '';
 }
 
-function isChecked (type, item) {
+function isChecked(type, item) {
   return type === item ? ' checked' : '';
+}
+
+function createPicturesTemplate(dest) {
+  const pics = dest.pictures;
+  return pics.map((item) => `<img class="event__photo" src="${item.src}" alt="${item.src}">`).join('');
 }
 
 function createEventsTemplate(type) {
@@ -42,8 +47,9 @@ function createEventsTemplate(type) {
                         </div>`).join('');
 }
 
-function createEditPointTemplate(point) {
-  const {basePrice, dateFrom, dateTo, destination, type} = point;
+function createEditPointTemplate({ state }) {
+  const { point } = state;
+  const { basePrice, dateFrom, dateTo, destination, type } = point;
   const dateF = humanizePointDate(dateFrom);
   const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
@@ -52,6 +58,7 @@ function createEditPointTemplate(point) {
   const offersTemplate = createOffersTemplate(offersList, point);
   const eventsTemplate = createEventsTemplate(type);
   const destinationsTemplate = createDestListTemplate(getDestinations(), destName);
+  const picturesTemplate = createPicturesTemplate(findDestination(destination));
 
   return (
     `<li class="trip-events__item">
@@ -92,7 +99,7 @@ function createEditPointTemplate(point) {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" required>
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -111,10 +118,17 @@ function createEditPointTemplate(point) {
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${destDescription}</p>
                   </section>
+
+                  <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${picturesTemplate}
+                      </div>
+                    </div>
+
                 </section>
               </form>
             </li>`
   );
 }
 
-export {createEditPointTemplate};
+export { createEditPointTemplate };

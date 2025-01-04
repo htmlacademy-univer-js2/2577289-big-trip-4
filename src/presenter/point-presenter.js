@@ -1,6 +1,8 @@
-import {render, replace, remove} from '../framework/render.js';
+import { render, replace, remove } from '../framework/render.js';
 import WaypointView from '../view/waypoint-view.js';
 import EditPointView from '../view/edit-point-view.js';
+import { UserAction, UpdateType } from '../const.js';
+import { getOfferPrice } from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -14,11 +16,12 @@ export default class PointPresenter {
 
   #pointComponent = null;
   #pointEditComponent = null;
+  #totalPointCost = 0;
 
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor({pointListContainer, onModeChange, onDataChange}) {
+  constructor({ pointListContainer, onModeChange, onDataChange }) {
     this.#pointListContainer = pointListContainer;
     this.#handleModeChange = onModeChange;
     this.#handleDataChange = onDataChange;
@@ -26,6 +29,10 @@ export default class PointPresenter {
 
   init(point) {
     this.#point = point;
+    this.#totalPointCost = this.#point.basePrice;
+    for (const offerId of this.#point.offers) {
+      this.#totalPointCost += getOfferPrice(this.#point.type, offerId);
+    }
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
@@ -35,14 +42,17 @@ export default class PointPresenter {
       onEditClick: () => {
         this.#replacePointToForm();
       },
-      onFavoriteClick: this.#handleFavoriteClick});
+      onFavoriteClick: this.#handleFavoriteClick
+    });
 
     this.#pointEditComponent = new EditPointView({
       point: this.#point,
       onFormSubmit: this.#handleFormSubmit,
       onButtonClick: () => {
+        this.#pointEditComponent.reset(this.#point);
         this.#replaceFormToPoint();
-      }
+      },
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -64,8 +74,16 @@ export default class PointPresenter {
     remove(prevPointEditComponent);
   }
 
+  get totalPointCost() {
+    return this.#totalPointCost;
+  }
+
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      { ...this.#point, isFavorite: !this.#point.isFavorite },
+    );
   };
 
   destroy() {
@@ -82,6 +100,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
@@ -93,16 +112,40 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    this.#handleDataChange(point);
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    // todo!!!
+    // const isMinorUpdate =
+    //   !isDatesEqual(this.#point.dueDate, update.dueDate) ||
+    //   isTaskRepeating(this.#point.repeating) !== isTaskRepeating(update.repeating);
+
+    // this.#handleDataChange(
+    //   UserAction.UPDATE_TASK,
+    //   isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+    //   update,
+    // );
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
     this.#replaceFormToPoint();
   };
-
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      point,
+    );
   };
 }
