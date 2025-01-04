@@ -1,8 +1,8 @@
-import {render, replace, remove} from '../framework/render.js';
+import { render, replace, remove } from '../framework/render.js';
 import WaypointView from '../view/waypoint-view.js';
 import EditPointView from '../view/edit-point-view.js';
-import {UserAction, UpdateType} from '../const.js';
-import { getOfferPrice } from '../mock/point.js';
+import { UserAction, UpdateType } from '../const.js';
+import { getOfferPrice } from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -21,7 +21,7 @@ export default class PointPresenter {
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor({pointListContainer, onModeChange, onDataChange}) {
+  constructor({ pointListContainer, onModeChange, onDataChange }) {
     this.#pointListContainer = pointListContainer;
     this.#handleModeChange = onModeChange;
     this.#handleDataChange = onDataChange;
@@ -42,7 +42,8 @@ export default class PointPresenter {
       onEditClick: () => {
         this.#replacePointToForm();
       },
-      onFavoriteClick: this.#handleFavoriteClick});
+      onFavoriteClick: this.#handleFavoriteClick
+    });
 
     this.#pointEditComponent = new EditPointView({
       point: this.#point,
@@ -81,7 +82,7 @@ export default class PointPresenter {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-      {...this.#point, isFavorite: !this.#point.isFavorite},
+      { ...this.#point, isFavorite: !this.#point.isFavorite },
     );
   };
 

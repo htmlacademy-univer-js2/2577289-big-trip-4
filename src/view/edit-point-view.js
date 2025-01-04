@@ -1,7 +1,6 @@
-import {createEditPointTemplate} from '../template/edit-point-template.js';
+import { createEditPointTemplate } from '../template/edit-point-template.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { findOffersByType, findDestinationId } from '../mock/point.js';
-import { getEmptyPoint } from '../mock/point.js';
+import { findOffersByType, findDestinationId, getEmptyPoint } from '../utils/point.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -13,9 +12,9 @@ export default class EditPointView extends AbstractStatefulView {
   #datepickerTo = null;
   #handleDeleteClick = null;
 
-  constructor({point = getEmptyPoint(), onFormSubmit, onButtonClick, onDeleteClick}) {
+  constructor({ point = getEmptyPoint(), onFormSubmit, onButtonClick, onDeleteClick }) {
     super();
-    this._setState(EditPointView.parsePointToState({point}));
+    this._setState(EditPointView.parsePointToState({ point }));
     this.#handleFormSubmit = onFormSubmit;
     this.#handleButtonClick = onButtonClick;
     this.#handleDeleteClick = onDeleteClick;
@@ -36,7 +35,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditPointTemplate({state: this._state});
+    return createEditPointTemplate({ state: this._state });
   }
 
   _restoreHandlers() {
@@ -69,13 +68,13 @@ export default class EditPointView extends AbstractStatefulView {
     // });
 
     const dests = this.element.querySelectorAll('.event__input--destination');
-    for(const dest of dests) {
+    for (const dest of dests) {
       dest.addEventListener('change', this.#destChangeHandler);
     }
 
     const container = this.element.querySelector('.event__section--offers');
     const checkboxes = container.querySelectorAll('.event__offer-checkbox');
-    for(const checkbox of checkboxes) {
+    for (const checkbox of checkboxes) {
       checkbox.addEventListener('click', this.#offerClickHandler);
     }
 
@@ -205,11 +204,11 @@ export default class EditPointView extends AbstractStatefulView {
 
   reset(point) {
     this.updateElement(
-      EditPointView.parsePointToState({point}),
+      EditPointView.parsePointToState({ point }),
     );
   }
 
-  static parsePointToState = ({point}) => ({point});
+  static parsePointToState = ({ point }) => ({ point });
 
   static parseStateToPoint = (state) => state.point;
 

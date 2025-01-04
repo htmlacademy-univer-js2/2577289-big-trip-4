@@ -1,5 +1,5 @@
-import {humanizePointDate} from '../utils.js';
-import { findDestination, findOffersByType, getDestinations } from '../mock/point.js';
+import { humanizePointDate } from '../utils.js';
+import { findDestination, findOffersByType, getDestinations } from '../utils/point.js';
 import { EVENTS } from '../const.js';
 
 function createDestListTemplate(destinations, destName) {
@@ -27,11 +27,11 @@ function createOffersTemplate(offers, point) {
 </div>`).join('');
 }
 
-function isCheckedOffer (offer, point) {
+function isCheckedOffer(offer, point) {
   return point.offers.includes(offer.id) ? 'checked' : '';
 }
 
-function isChecked (type, item) {
+function isChecked(type, item) {
   return type === item ? ' checked' : '';
 }
 
@@ -47,9 +47,9 @@ function createEventsTemplate(type) {
                         </div>`).join('');
 }
 
-function createEditPointTemplate({state}) {
-  const {point} = state;
-  const {basePrice, dateFrom, dateTo, destination, type} = point;
+function createEditPointTemplate({ state }) {
+  const { point } = state;
+  const { basePrice, dateFrom, dateTo, destination, type } = point;
   const dateF = humanizePointDate(dateFrom);
   const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
@@ -131,4 +131,4 @@ function createEditPointTemplate({state}) {
   );
 }
 
-export {createEditPointTemplate};
+export { createEditPointTemplate };

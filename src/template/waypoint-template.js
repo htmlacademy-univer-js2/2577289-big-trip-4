@@ -1,5 +1,5 @@
 import { humanizePointDate, getDateDifference } from '../utils.js';
-import { findDestination, getOfferById } from '../mock/point.js';
+import { findDestination, getOfferById } from '../utils/point.js';
 
 function getOffersTemplate(offers, type) {
   const res = [];
@@ -15,7 +15,7 @@ function getOffersTemplate(offers, type) {
 }
 
 function createWaypointTemplate(point) {
-  const {basePrice, dateFrom, dateTo, destination, isFavorite, offers, type} = point;
+  const { basePrice, dateFrom, dateTo, destination, isFavorite, offers, type } = point;
   const dateF = humanizePointDate(dateFrom);
   const dateT = humanizePointDate(dateTo);
   const destName = findDestination(destination).name;
@@ -59,4 +59,4 @@ function createWaypointTemplate(point) {
   );
 }
 
-export {createWaypointTemplate};
+export { createWaypointTemplate };
