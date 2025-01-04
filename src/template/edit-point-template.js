@@ -35,6 +35,11 @@ function isChecked (type, item) {
   return type === item ? ' checked' : '';
 }
 
+function createPicturesTemplate(dest) {
+  const pics = dest.pictures;
+  return pics.map((item) => `<img class="event__photo" src="${item.src}" alt="${item.src}">`).join('');
+}
+
 function createEventsTemplate(type) {
   return EVENTS.map((item) => `<div class="event__type-item">
                           <input id="event-type-${item}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}"${isChecked(type, item)}>
@@ -53,6 +58,7 @@ function createEditPointTemplate({state}) {
   const offersTemplate = createOffersTemplate(offersList, point);
   const eventsTemplate = createEventsTemplate(type);
   const destinationsTemplate = createDestListTemplate(getDestinations(), destName);
+  const picturesTemplate = createPicturesTemplate(findDestination(destination));
 
   return (
     `<li class="trip-events__item">
@@ -112,6 +118,13 @@ function createEditPointTemplate({state}) {
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${destDescription}</p>
                   </section>
+
+                  <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${picturesTemplate}
+                      </div>
+                    </div>
+
                 </section>
               </form>
             </li>`

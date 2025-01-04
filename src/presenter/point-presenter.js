@@ -2,6 +2,7 @@ import {render, replace, remove} from '../framework/render.js';
 import WaypointView from '../view/waypoint-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import {UserAction, UpdateType} from '../const.js';
+import { getOfferPrice } from '../mock/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -15,6 +16,7 @@ export default class PointPresenter {
 
   #pointComponent = null;
   #pointEditComponent = null;
+  #totalPointCost = 0;
 
   #point = null;
   #mode = Mode.DEFAULT;
@@ -27,6 +29,10 @@ export default class PointPresenter {
 
   init(point) {
     this.#point = point;
+    this.#totalPointCost = this.#point.basePrice;
+    for (const offerId of this.#point.offers) {
+      this.#totalPointCost += getOfferPrice(this.#point.type, offerId);
+    }
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
@@ -65,6 +71,10 @@ export default class PointPresenter {
 
     remove(prevPointComponent);
     remove(prevPointEditComponent);
+  }
+
+  get totalPointCost() {
+    return this.#totalPointCost;
   }
 
   #handleFavoriteClick = () => {
@@ -133,7 +143,7 @@ export default class PointPresenter {
   #handleDeleteClick = (point) => {
     this.#handleDataChange(
       UserAction.DELETE_POINT,
-      UpdateType.MINOR,
+      UpdateType.MAJOR,
       point,
     );
   };

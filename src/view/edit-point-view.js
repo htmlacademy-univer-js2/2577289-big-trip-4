@@ -1,6 +1,7 @@
 import {createEditPointTemplate} from '../template/edit-point-template.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { findOffersByType, findDestinationId } from '../mock/point.js';
+import { getEmptyPoint } from '../mock/point.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -12,7 +13,7 @@ export default class EditPointView extends AbstractStatefulView {
   #datepickerTo = null;
   #handleDeleteClick = null;
 
-  constructor({point, onFormSubmit, onButtonClick, onDeleteClick}) {
+  constructor({point = getEmptyPoint(), onFormSubmit, onButtonClick, onDeleteClick}) {
     super();
     this._setState(EditPointView.parsePointToState({point}));
     this.#handleFormSubmit = onFormSubmit;

@@ -23,7 +23,8 @@ export default class NewPointPresenter {
 
     this.#pointEditComponent = new EditPointView({
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick
+      onDeleteClick: this.#handleDeleteClick,
+      onButtonClick: this.#handleDeleteClick,
     });
 
     render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);

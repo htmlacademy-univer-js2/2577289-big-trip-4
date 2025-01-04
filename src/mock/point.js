@@ -2,17 +2,15 @@ import {getRandomArrayElement} from '../utils.js';
 import {CITIES} from '../const.js';
 import {nanoid} from 'nanoid';
 
-const emptyPoint = [
-  {
-    basePrice: 0,
-    dateFrom: '2000-00-00T00:00:00Z',
-    dateTo: '2000-00-00T00:00:00Z',
-    destination: 'a0',
-    isFavorite: false,
-    offers: [],
-    type: 'taxi',
-  }
-];
+const emptyPoint = {
+  basePrice: 0,
+  dateFrom: '2024-01-01T00:00:00Z',
+  dateTo: '2025-01-01T00:00:00Z',
+  destination: 'a0',
+  isFavorite: false,
+  offers: [],
+  type: 'taxi',
+};
 
 const mockPoints = [
   {
@@ -99,7 +97,11 @@ const mockDestination = [
     name: 'Chamonix',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://dummyimage.com/640x360/eee/aaa',
+        description: 'Chamonix parliament building'
+      },
+      {
+        src: 'https://dummyimage.com/640x360/eee/aaa',
         description: 'Chamonix parliament building'
       }
     ]
@@ -110,7 +112,7 @@ const mockDestination = [
     name: 'Paris',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://dummyimage.com/640x360/eee/aaa',
         description: 'Paris parliament building'
       }
     ]
@@ -154,6 +156,10 @@ function findOfferByType(optionType) {
   }).offers[0];
 }
 
+function getOfferById(offerId, type) {
+  return mockOptions.find((item) => (item.type === type)).offers.find((offer) => (offer.id === offerId));
+}
+
 function findOffersByType(optionType) {
   const foundOption = mockOptions.find((item) => item.type === optionType);
   return foundOption ? foundOption.offers : [];
@@ -190,6 +196,10 @@ function getDestinationNameById(destId) {
   return mockDestination.find((item) => item.id === destId).name;
 }
 
+function getOfferPrice(typeName, offerId) {
+  return mockOptions.find((item) => item.type === typeName).offers.find((offer) => offer.id === offerId).price;
+}
+
 export {getRandomPoint, findDestination, findSpecialOffer, getRandomCity, getOffers,
   getEmptyPoint, findOffersByType, getDestinations, findDestinationId, getDestinationsNames,
-  getDestinationNameById};
+  getDestinationNameById, getOfferPrice, getOfferById};
