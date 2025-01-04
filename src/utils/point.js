@@ -109,8 +109,6 @@ function getOfferPrice(typeName, offerId) {
 export {
   getRandomPoint, findDestination, findSpecialOffer, getRandomCity, getOffers,
   getEmptyPoint, findOffersByType, getDestinations, findDestinationId, getDestinationsNames,
-  getDestinationNameById, getOfferPrice, getOfferById
+  getDestinationNameById, getOfferPrice, getOfferById,
+  humanizePointDate, sortDateDown, sortPriceDown, sortTimeDown
 };
-
-
-export { humanizePointDate, sortDateDown, sortPriceDown, sortTimeDown };

@@ -8,11 +8,11 @@ import FilterPresenter from './filter-presenter.js';
 import EmptyListView from '../view/empty-list-view.js';
 import { filter } from '../utils/filter.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
-import { sortDateDown, sortPriceDown, sortTimeDown } from '../utils/point.js';
+import { sortDateDown, sortPriceDown, sortTimeDown, getDestinationNameById } from '../utils/point.js';
 
 export default class BoardPresenter {
   #sortComponent = null;
-  #infoComponent = new TripInfoView(0);
+  #infoComponent = new TripInfoView(0, []);
   #eventListComponent = new EventListView();
   #noPointComponent = null;
   #container = null;
@@ -75,6 +75,14 @@ export default class BoardPresenter {
     return summ;
   }
 
+  getCities() {
+    const res = [];
+    for (const point of this.#pointsModel.points) {
+      res.push(getDestinationNameById(point.destination));
+    }
+    return res;
+  }
+
   // #handlePointChange = (updatedPoint) => {   --удалить???
   //   // Здесь будем вызывать обновление модели todo
   //   this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
@@ -128,6 +136,7 @@ export default class BoardPresenter {
       this.#renderNoPoints(this.#filterModel.filter);
     }
     this.#infoComponent.totalCost = this.totalCost;
+    this.#infoComponent.cities = this.getCities();
     render(this.#infoComponent, this.#header, RenderPosition.AFTERBEGIN);
   }
 
