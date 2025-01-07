@@ -1,5 +1,3 @@
-const CITIES = ['Paris', 'London', 'Moscow', 'Tokio', 'Amsterdam', 'Geneva'];
-
 const EVENTS = ['drive', 'flight', 'check-in', 'sightseeing', 'restaurant', 'ship', 'bus', 'train', 'taxi'];
 
 const pointDescription = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -23,6 +21,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const FilterType = {
@@ -32,4 +31,4 @@ const FilterType = {
   PAST: 'PAST',
 };
 
-export {EVENTS, CITIES, pointDescription, SortType, UserAction, UpdateType, FilterType};
+export { EVENTS, pointDescription, SortType, UserAction, UpdateType, FilterType };

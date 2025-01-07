@@ -1,6 +1,7 @@
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
 import TripInfoView from '../view/trip-info-view.js';
+import LoadingView from '../view/loading-view.js';
 import { render, RenderPosition, remove } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
@@ -14,6 +15,7 @@ export default class BoardPresenter {
   #sortComponent = null;
   #infoComponent = new TripInfoView(0, []);
   #eventListComponent = new EventListView();
+  #loadingComponent = new LoadingView();
   #noPointComponent = null;
   #container = null;
   #header = null;
@@ -22,6 +24,9 @@ export default class BoardPresenter {
   #pointPresenters = new Map();
   #newPointPresenter = null;
   #filterPresenter = null;
+  #isLoading = true;
+
+  #onNewPointDestroy = null;
 
   #currentSortType = SortType.DATE_DOWN;
 
@@ -30,14 +35,17 @@ export default class BoardPresenter {
     this.#header = header;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#onNewPointDestroy = onNewPointDestroy;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
-    this.#newPointPresenter = new NewPointPresenter({
-      pointListContainer: this.#eventListComponent.element,
-      onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy,
-    });
+    // this.#newPointPresenter = new NewPointPresenter({
+    //   pointListContainer: this.#eventListComponent.element,
+    //   onDataChange: this.#handleViewAction,
+    //   onDestroy: onNewPointDestroy,
+    //   destinations: this.#pointsModel.destinations,
+    //   allOffers: this.#pointsModel.offers,
+    // });
 
     this.#filterPresenter = new FilterPresenter({
       filterContainer: this.#header,
@@ -78,7 +86,7 @@ export default class BoardPresenter {
   getCities() {
     const res = [];
     for (const point of this.#pointsModel.points) {
-      res.push(getDestinationNameById(point.destination));
+      res.push(getDestinationNameById(this.#pointsModel.destinations, point.destination));
     }
     return res;
   }
@@ -102,6 +110,9 @@ export default class BoardPresenter {
   }
 
   #renderSort() {
+    if (this.#sortComponent !== null) {
+      remove(this.#sortComponent);
+    }
     this.#sortComponent = new SortView({
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
@@ -114,6 +125,8 @@ export default class BoardPresenter {
       pointListContainer: this.#eventListComponent.element,
       onModeChange: this.#handleModeChange,
       onDataChange: this.#handleViewAction,
+      destinations: this.#pointsModel.destinations,
+      allOffers: this.#pointsModel.offers,
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
@@ -130,14 +143,27 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
+    // if (this.#sortComponent !== null) {
+    //   remove(this.#sortComponent);
+    //   this.#renderSort();
+    // }
     this.#renderSort();
+
     this.#renderBoardList();
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if (this.#pointPresenters.size === 0) {
       this.#renderNoPoints(this.#filterModel.filter);
     }
     this.#infoComponent.totalCost = this.totalCost;
     this.#infoComponent.cities = this.getCities();
     render(this.#infoComponent, this.#header, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -176,6 +202,18 @@ export default class BoardPresenter {
         this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#newPointPresenter = new NewPointPresenter({
+          pointListContainer: this.#eventListComponent.element,
+          onDataChange: this.#handleViewAction,
+          onDestroy: this.#onNewPointDestroy,
+          destinations: this.#pointsModel.destinations,
+          allOffers: this.#pointsModel.offers,
+        });
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -194,6 +232,9 @@ export default class BoardPresenter {
     remove(this.#sortComponent);
     remove(this.#infoComponent);
     //remove(this.#filterComponent);
+    if (this.#loadingComponent) {
+      remove(this.#loadingComponent);
+    }
 
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);

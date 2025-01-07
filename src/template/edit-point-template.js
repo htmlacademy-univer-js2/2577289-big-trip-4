@@ -1,5 +1,5 @@
 import { humanizePointDate } from '../utils.js';
-import { findDestination, findOffersByType, getDestinations } from '../utils/point.js';
+import { findDestination, findOffersByType } from '../utils/point.js';
 import { EVENTS } from '../const.js';
 
 function createDestListTemplate(destinations, destName) {
@@ -36,6 +36,9 @@ function isChecked(type, item) {
 }
 
 function createPicturesTemplate(dest) {
+  if (dest.pictures === null) {
+    return '';
+  }
   const pics = dest.pictures;
   return pics.map((item) => `<img class="event__photo" src="${item.src}" alt="${item.src}">`).join('');
 }
@@ -47,18 +50,18 @@ function createEventsTemplate(type) {
                         </div>`).join('');
 }
 
-function createEditPointTemplate({ state }) {
+function createEditPointTemplate({ state, destinations, offers }) {
   const { point } = state;
   const { basePrice, dateFrom, dateTo, destination, type } = point;
   const dateF = humanizePointDate(dateFrom);
   const dateT = humanizePointDate(dateTo);
-  const destName = findDestination(destination).name;
-  const destDescription = findDestination(destination).description;
-  const offersList = findOffersByType(type);
+  const destName = findDestination(destinations, destination).name;
+  const destDescription = findDestination(destinations, destination).description;
+  const offersList = findOffersByType(offers, type);
   const offersTemplate = createOffersTemplate(offersList, point);
   const eventsTemplate = createEventsTemplate(type);
-  const destinationsTemplate = createDestListTemplate(getDestinations(), destName);
-  const picturesTemplate = createPicturesTemplate(findDestination(destination));
+  const destinationsTemplate = createDestListTemplate(destinations, destName);
+  const picturesTemplate = createPicturesTemplate(findDestination(destinations, destination));
 
   return (
     `<li class="trip-events__item">

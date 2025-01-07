@@ -1,6 +1,9 @@
 import { humanizePointDate } from '../utils.js';
 
 function getCitiesTemplate(cities) {
+  if (cities.length > 3) {
+    return [cities[0], ' - ', cities[cities.length - 1]].join(' &mdash; ');
+  }
   return cities.map((city) => (`${city}`)).join(' &mdash; ');
 }
 
