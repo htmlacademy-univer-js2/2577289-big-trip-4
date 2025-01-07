@@ -17,21 +17,25 @@ export default class PointPresenter {
   #pointComponent = null;
   #pointEditComponent = null;
   #totalPointCost = 0;
+  #destinations = null;
+  #allOffers = null;
 
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ pointListContainer, onModeChange, onDataChange }) {
+  constructor({ pointListContainer, onModeChange, onDataChange, destinations, allOffers }) {
     this.#pointListContainer = pointListContainer;
     this.#handleModeChange = onModeChange;
     this.#handleDataChange = onDataChange;
+    this.#destinations = destinations;
+    this.#allOffers = allOffers;
   }
 
   init(point) {
     this.#point = point;
     this.#totalPointCost = this.#point.basePrice;
     for (const offerId of this.#point.offers) {
-      this.#totalPointCost += getOfferPrice(this.#point.type, offerId);
+      this.#totalPointCost += getOfferPrice(this.#allOffers, this.#point.type, offerId);
     }
 
     const prevPointComponent = this.#pointComponent;
@@ -42,7 +46,9 @@ export default class PointPresenter {
       onEditClick: () => {
         this.#replacePointToForm();
       },
-      onFavoriteClick: this.#handleFavoriteClick
+      onFavoriteClick: this.#handleFavoriteClick,
+      destinations: this.#destinations,
+      allOffers: this.#allOffers,
     });
 
     this.#pointEditComponent = new EditPointView({
@@ -53,6 +59,8 @@ export default class PointPresenter {
         this.#replaceFormToPoint();
       },
       onDeleteClick: this.#handleDeleteClick,
+      destinations: this.#destinations,
+      offers: this.#allOffers,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {

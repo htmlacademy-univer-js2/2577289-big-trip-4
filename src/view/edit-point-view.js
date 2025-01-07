@@ -1,6 +1,6 @@
 import { createEditPointTemplate } from '../template/edit-point-template.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { findOffersByType, findDestinationId, getEmptyPoint } from '../utils/point.js';
+import { findOffersByType, findDestinationId } from '../utils/point.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -12,9 +12,14 @@ export default class EditPointView extends AbstractStatefulView {
   #datepickerTo = null;
   #handleDeleteClick = null;
 
-  constructor({ point = getEmptyPoint(), onFormSubmit, onButtonClick, onDeleteClick }) {
+  #destinations = null;
+  #offers = null;
+
+  constructor({ point, onFormSubmit, onButtonClick, onDeleteClick, destinations, offers }) {
     super();
     this._setState(EditPointView.parsePointToState({ point }));
+    this.#destinations = destinations;
+    this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleButtonClick = onButtonClick;
     this.#handleDeleteClick = onDeleteClick;
@@ -35,7 +40,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditPointTemplate({ state: this._state });
+    return createEditPointTemplate({ state: this._state, destinations: this.#destinations, offers: this.#offers });
   }
 
   _restoreHandlers() {
@@ -63,7 +68,6 @@ export default class EditPointView extends AbstractStatefulView {
     //     input.setCustomValidity('Please select a valid fruit from the list.');
     //   } else {
     //     input.setCustomValidity('');
-    //     console.log(1);
     //   }
     // });
 
@@ -152,7 +156,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        destination: findDestinationId(evt.target.value).id
+        destination: findDestinationId(this.#destinations, evt.target.value).id
       }
     });
   };
@@ -189,7 +193,6 @@ export default class EditPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    // console.log(getDestinationsNames(), getDestinationNameById(this._state.point.destination));
     // if (!getDestinationsNames().includes(this._state.point.destination)) {
     //   alert('Wrong input!');
     //   return;

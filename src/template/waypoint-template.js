@@ -1,10 +1,10 @@
 import { humanizePointDate, getDateDifference } from '../utils.js';
 import { findDestination, getOfferById } from '../utils/point.js';
 
-function getOffersTemplate(offers, type) {
+function getOffersTemplate(allOffers, offers, type) {
   const res = [];
   for (const offerId of offers) {
-    const offer = getOfferById(offerId, type);
+    const offer = getOfferById(allOffers, offerId, type);
     res.push([offer.title, offer.price]);
   }
   return res.map((item) => (`<li class="event__offer">
@@ -14,12 +14,12 @@ function getOffersTemplate(offers, type) {
                   </li>`)).join(' ');
 }
 
-function createWaypointTemplate(point) {
+function createWaypointTemplate({ point, destinations, allOffers }) {
   const { basePrice, dateFrom, dateTo, destination, isFavorite, offers, type } = point;
   const dateF = humanizePointDate(dateFrom);
   const dateT = humanizePointDate(dateTo);
-  const destName = findDestination(destination).name;
-  const offersTemplate = getOffersTemplate(offers, type);
+  const destName = findDestination(destinations, destination).name;
+  const offersTemplate = getOffersTemplate(allOffers, offers, type);
   const eventDuration = getDateDifference(dateFrom, dateTo);
   const isFavoritePoint = isFavorite ? ' event__favorite-btn--active' : '';
   return (
