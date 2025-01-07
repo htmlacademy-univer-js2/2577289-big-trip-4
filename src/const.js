@@ -1,5 +1,3 @@
-import { getRandomCity } from "./utils/point";
-
 const EVENTS = ['drive', 'flight', 'check-in', 'sightseeing', 'restaurant', 'ship', 'bus', 'train', 'taxi'];
 
 const pointDescription = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.

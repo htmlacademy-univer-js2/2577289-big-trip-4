@@ -2,7 +2,6 @@ import PointsModel from './model/points-model.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import NewPointButtonView from './view/new-point-button-view.js';
 import { render } from './framework/render.js';
-import { RenderPosition } from './framework/render.js';
 import FilterModel from './model/filter-model.js';
 import PointsApiService from './points-api-service.js';
 import DestinationsApiService from './destinations-api-service.js';
